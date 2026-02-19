@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://du8o3futyfgs"]
+
+[ext_resource type="Texture2D" uid="uid://bl5poxblecav0" path="res://assets/art/2d/ennemies/character_yellow_idle.png" id="1_0o580"]
+[ext_resource type="Script" uid="uid://6adnpbd6c8c6" path="res://assets/scripts/enemies/basic_enemy.gd" id="1_4133h"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4133h"]
+radius = 31.0
+height = 96.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4133h"]
+size = Vector2(96, 106)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4133h"]
+radius = 540.0037
+
+[node name="BasicEnemy" type="CharacterBody2D" unique_id=351146698]
+scale = Vector2(0.5, 0.5)
+collision_layer = 4
+script = ExtResource("1_4133h")
+
+[node name="AnimatedSprite2D" type="Sprite2D" parent="." unique_id=1517916986]
+texture = ExtResource("1_0o580")
+offset = Vector2(0, -20)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=607486472]
+position = Vector2(0, -3)
+shape = SubResource("CapsuleShape2D_4133h")
+
+[node name="HurtBox" type="Area2D" parent="." unique_id=2105481739]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox" unique_id=201015759]
+position = Vector2(0, -5)
+shape = SubResource("RectangleShape2D_4133h")
+debug_color = Color(0.8091467, 0.2512416, 0.8135498, 0.41960785)
+
+[node name="DetectionRadius" type="Area2D" parent="." unique_id=1218837859]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionRadius" unique_id=1594477493]
+shape = SubResource("CircleShape2D_4133h")
+debug_color = Color(0.34901962, 0.61960787, 0, 0.29803923)
+
+[connection signal="area_entered" from="HurtBox" to="." method="_on_hurt_box_area_entered"]
+[connection signal="body_entered" from="DetectionRadius" to="." method="_on_detection_radius_body_entered"]
+[connection signal="body_exited" from="DetectionRadius" to="." method="_on_detection_radius_body_exited"]

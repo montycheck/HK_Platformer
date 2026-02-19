@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cn0mqjg7qi41s"]
+
+[ext_resource type="PackedScene" uid="uid://da84ajuoi0pue" path="res://assets/scenes/levels/pixel_level.tscn" id="1_cb66b"]
+[ext_resource type="PackedScene" uid="uid://bimrbusqh5ikp" path="res://assets/prefabs/player/player.tscn" id="2_dis88"]
+[ext_resource type="Script" uid="uid://bbkvkmlookhip" path="res://assets/scripts/damage_manager.gd" id="3_5gf0t"]
+
+[node name="Game" type="Node2D" unique_id=1567719027]
+
+[node name="PixelLevel" parent="." unique_id=1202772334 instance=ExtResource("1_cb66b")]
+
+[node name="PlayerController" parent="." unique_id=907357232 instance=ExtResource("2_dis88")]
+position = Vector2(95, -141)
+
+[node name="DamageManager" type="Node2D" parent="." unique_id=1820771528]
+script = ExtResource("3_5gf0t")
