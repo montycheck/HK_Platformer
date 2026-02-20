@@ -13,6 +13,7 @@ signal hurt_signal()
 const SPEED = 100.0
 const KNOCKBACK_LENGTH = 70.0
 const KNOCKBACK_VELOCITY = 200.0
+const ATTACK_DAMAGE = 30.0
 
 
 var direction = 1
@@ -93,7 +94,6 @@ func _on_hurt_box_area_entered(area: Area2D) -> void:
 		
 
 func _on_detection_radius_body_entered(body: Node2D) -> void:
-	print(body)
 	if body.is_in_group("player"):
 		is_chasing = true
 		player = body

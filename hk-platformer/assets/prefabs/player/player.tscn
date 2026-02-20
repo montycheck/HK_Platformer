@@ -464,10 +464,14 @@ animations = [{
 "speed": 24.0
 }]
 
-[sub_resource type="LabelSettings" id="LabelSettings_aacko"]
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_aacko"]
 size = Vector2(39, 20)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_p2h2o"]
+radius = 11.0
+height = 48.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_aacko"]
 
 [node name="PlayerController" type="CharacterBody2D" unique_id=907357232 groups=["player"]]
 collision_layer = 2
@@ -537,6 +541,23 @@ rotation = 3.1415927
 position = Vector2(0, -10)
 target_position = Vector2(21, 0)
 
+[node name="Hitbox" type="Area2D" parent="." unique_id=345336047]
+collision_layer = 2
+collision_mask = 4
+
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox" unique_id=1710358595 groups=["player"]]
+position = Vector2(30, 0)
+shape = SubResource("RectangleShape2D_aacko")
+disabled = true
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1905546944]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=874925468]
+shape = SubResource("CapsuleShape2D_p2h2o")
+debug_color = Color(0.83895564, 0.18758827, 0.8220946, 0.41960785)
+
 [node name="Control" type="Control" parent="." unique_id=517586476]
 custom_minimum_size = Vector2(80, 60)
 layout_mode = 3
@@ -562,9 +583,4 @@ autowrap_mode = 2
 justification_flags = 3
 metadata/_edit_use_anchors_ = true
 
-[node name="Hitbox" type="Area2D" parent="." unique_id=345336047]
-
-[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox" unique_id=1710358595 groups=["player"]]
-position = Vector2(30, 0)
-shape = SubResource("RectangleShape2D_aacko")
-disabled = true
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]

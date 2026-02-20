@@ -12,7 +12,8 @@ enum STATE {
 	WALL_JUMP,
 	WALL_CLIMB,
 	DASH,
-	ATTACK
+	ATTACK,
+	KNOCKBACK
 }
 
 const FALL_GRAVITY : float = 1500.0
@@ -32,6 +33,8 @@ const WALL_CLIMB_VELOCITY : float = -300.0
 const WALL_CLIMB_LENGTH : float = 90.0
 const DASH_LENGTH : float = 100.0
 const DASH_VELOCITY : float = 600.0
+const KNOCKBACK_LENGTH : float = 70.0
+const KNOCKBACK_VELOCITY : float = 200.0
 
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite
@@ -56,8 +59,10 @@ var facing_direction : float = 1.0
 var saved_position : Vector2 = Vector2.ZERO
 var can_dash = false
 var dash_jump_buffer = false
+var knockback_direction : float = 1.0
 
 var attack_damage = 40.0
+signal takeDamageSignal
 
 func _ready() -> void:
 	switch_state(active_state)
@@ -151,6 +156,12 @@ func switch_state(to_state: STATE) -> void:
 				hitbox.rotation_degrees = 0
 			elif facing_direction < 0:
 				hitbox.rotation_degrees = 180
+		
+		STATE.KNOCKBACK:
+			saved_position = position
+			velocity.y = -KNOCKBACK_VELOCITY
+			velocity.x = KNOCKBACK_VELOCITY * knockback_direction
+
 
 
 func process_state(delta: float) -> void:
@@ -307,6 +318,17 @@ func process_state(delta: float) -> void:
 					switch_state(STATE.FLOAT)
 				else:
 					switch_state(STATE.FALL)
+		
+		STATE.KNOCKBACK:
+			var distance = absf(position.x - saved_position.x)
+			if distance >= KNOCKBACK_LENGTH or is_on_wall():
+				if is_on_wall():
+					switch_state(STATE.WALL_SLIDE)
+				elif is_on_floor():
+					switch_state(STATE.FLOOR)
+				else:
+					switch_state(STATE.FALL)
+				
 			
 			
 			
@@ -363,3 +385,12 @@ func is_facing_up() -> bool:
 		return true
 	else: 
 		return false
+
+
+func _on_hurtbox_area_entered(area: Area2D) -> void:
+	if area.get_parent().is_in_group('enemies'):
+		var damage = area.get_parent().ATTACK_DAMAGE
+		knockback_direction = signf(global_position.x - area.global_position.x)
+		print(knockback_direction)
+		switch_state(STATE.KNOCKBACK)
+		takeDamageSignal.emit(damage)
